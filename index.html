@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubirch Verification Widget Example</title>
+    <style>
+        .example {
+            padding: 10px;
+            border: 1px solid black;
+            margin-bottom: 10px;
+        }
+
+        #verification-widget {
+            padding: 10px;
+            border: 1px solid black;
+            margin-bottom: 10px;
+        }
+
+        #hash-input {
+          width: 800px;
+        }
+
+        .help {
+            padding: 10px;
+            border: 1px solid black;
+        }
+
+        .help li {
+            margin-bottom: 10px;
+        }
+
+        code {
+            background: lightgrey;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ubirch Verification Widget Example</h1>
+    <div class="example">
+        <div class="input-field">
+          <input placeholder="" type="text" id="pid">
+          <label for="pid">Pseudonym:</label>
+        </div>
+        <div class="input-field">
+          <input placeholder="" type="text" id="tid">
+          <label for="tid">sample ID:</label>
+        </div>
+        <div class="input-field">
+          <input placeholder="" type="text" id="td"
+                 class="datepicker">
+          <label for="td">date test result:</label>
+        </div>
+        <div class="input-field">
+          <input placeholder="" type="text" id="tt"
+                 class="timepicker">
+          <label for="tt">time test result:</label>
+        </div>
+
+        <div class="input-field">
+          <select id="tr" tabindex="-1">
+            <option value="" disabled="" selected="">please select..</option>
+            <option value="positiv">positive</option>
+            <option value="negativ">negative</option>
+            <option value="unklar">not clear</option>
+          </select>
+          <label for="tr">test result:</label>
+        </div>
+        <div class="input-field">
+          <button onclick="setTestData()">
+            Insert Test Data</button>
+          <button onclick="getJsonFromInputs()">
+            get JSON from Inputs</button>
+        </div>
+    </div>
+
+    <div class="example">
+      <div class="input-field">
+        <label for="json-input">JSON:</label>
+        <textarea rows="10" cols="80" placeholder="" type="text" id="json-input"></textarea>
+      </div>
+      <button id="insert-test-json" onclick="setTestJson()">
+        Insert Test JSON
+      </button>
+      <button id="hash-from-json" onclick="getHashForJson()">
+        get hash from JSON
+      </button>
+      <button id="json-test" onclick="verifyJson()">
+        Test JSON Verification
+      </button>
+    </div>
+    <div class="example">
+      <div class="input-field">
+        <label for="hash-input">hash:</label>
+        <input placeholder="" type="text" id="hash-input">
+      </div>
+      <button id="insert-test-hash" onclick="setTestHash()">
+        Insert Test hash
+      </button>
+      <button id="hash-test" onclick="verifyHash()">
+          Test hash verification
+      </button>
+    </div>
+    <div id="verification-widget">
+
+    </div>
+    <div class="help">
+        <ol>
+            <li>
+                Add <code>verification.js</code> script to your page:
+                <div>
+                    <code>
+                        &lt;script src=&quot;{{Ubirch URL}}/verification.js&quot;&gt;&lt;/script&gt;
+                    </code>
+                </div>
+            </li>
+            <li>
+                Create an <code>UbirchVerification</code> instance:
+                <div>
+                    <pre><code>const ubirchVerification = new UbirchVerification({
+    algorithm: 'sha512',
+    elementSelector: '#verification-widget'
+});
+</code></pre>
+                </div>
+                Where:
+                <ul>
+                    <li>
+                        <code>algorithm</code> is hashing algorithm you need (possible values: <code>sha256</code>, <code>sha512</code> )
+                    </li>
+                    <li>
+                        <code>elementSelector</code> is widget's host element selector, e.g. <code>#verification-widget</code>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                Call methods:
+                <ul>
+                    <li>
+                        <code>verifyJSON</code> if you need to verify JSON:
+                        <div>
+                            <pre><code>ubirchVerification.verifyJSON({{ your JSON }});</code></pre>
+                        </div>
+                    </li>
+                    <li>
+                        <code>verifyHash</code> if you need to verify JSON:
+                        <div>
+                            <pre><code>ubirchVerification.verifyHash({{ your hash }});</code></pre>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+          <li>
+            Helper methods:
+            <ul>
+              <li>
+                <code>createCertificate</code> to create the JSON from a couple of input fields
+                (id of input field has to be the name of the param in the JSON):
+                <div>
+                  <pre><code>ubirchVerification.createCertificate({{ array of input ids }}, {{ documentRef }});</code></pre>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ol>
+    </div>
+    <script src="https://console.dev.ubirch.com/libs/verification/verification.js"></script>
+    <script>
+
+      let ubirchVerification;
+      document.addEventListener("DOMContentLoaded", function() {
+        // create UbirchVerification instance
+        ubirchVerification = new UbirchVerification({
+          algorithm: 'sha512',
+          elementSelector: '#verification-widget'
+        });
+      });
+
+      // use ubirchVerification.verifyJSON( {{ your JSON }} ) to verify a json
+      // attention: params in the JSON have to be ordered alphabetically, no spaces
+      function verifyJson() {
+        if (check('json-input', 'Insert JSON')) {
+          ubirchVerification.verifyJSON(document.getElementById('json-input').value);
+        }
+      }
+
+      // use ubirchVerification.verifyHash( {{ your hash }} ) to verify a hash
+      // attention: be sure to use the correct hash algorithm in ubirchVerification constructor
+      function verifyHash() {
+        if (check('hash-input', 'Insert hash or generate from JSON')) {
+          ubirchVerification.verifyHash(document.getElementById('hash-input').value);
+        }
+      }
+
+      function getJsonFromInputs() {
+        if (check('pid', 'Insert Pseudonym') +
+          check('tid', 'Insert sample ID') +
+          check('td', 'Insert date of test result') +
+          check('tt', 'Insert time of test result') +
+          check('tr', 'select test result')) {
+          // helper to generate correct JSON from input fields
+          // attention: ids of input fields have to be same as fields in anchored JSON
+          const genJson = ubirchVerification.createCertificate( ["pid", "td", "tid", "tr", "tt"], document);
+          document.getElementById('json-input').value = genJson;
+        }
+      }
+
+      function getHashForJson() {
+        if (check('json-input', 'Insert JSON')) {
+          // helper to generate hash from JSON (for debugging or testing)
+          // attention: be sure to use the correct hash algorithm in ubirchVerification constructor
+          const genHash = ubirchVerification.createHash(document.getElementById('json-input').value);
+          document.getElementById('hash-input').value = genHash;
+        }
+      }
+
+      // ############## helpers for the example to insert test data into fields #####################
+
+      // testdata, anchored on every ubirch stage
+      const testdata = "pid=9ceb5551-d006-4648-8cf7-c7b1a1ddccb1&tid=FGXC-CL11-KDKC-P9XC-74MM&td=2020-06-12&tt=11:00:00&tr=negativ";
+      const testjson = `{"pid":"9ceb5551-d006-4648-8cf7-c7b1a1ddccb1", "tid":"FGXC-CL11-KDKC-P9XC-74MM", "td":"2020-06-12", "tt":"11:00:00", "tr":"negativ"}`;
+      const testhash = '06VMh9w0zBrfPMUmDpx2HSHYCi1EKYMRa3i5MdmaakOa9MQfgJiWMOvL2pwxWuHf4g685Nq9ymVag51craQ4fQ==';
+
+      function setTestData() {
+        var allParams = testdata.split('&').map(function (value) {
+            var data = value.split('=');
+            return {
+              key : data[0],
+              value : decodeURIComponent(data[1])
+            }
+          });
+        allParams.forEach(param => {
+          if (param.key + document.getElementById(param.key)) {
+            document.getElementById(param.key).value = param.value;
+          }
+        });
+      }
+
+      function setTestJson() {
+        document.getElementById('json-input').value = testjson;
+      }
+
+      function setTestHash() {
+        document.getElementById('hash-input').value = testhash;
+      }
+
+      // helper to check that ubirchVerification instance is initialized and required input field are set
+      function check(elemId, errorMessage) {
+        if (ubirchVerification !== undefined) {
+          if (document.getElementById(elemId).value !== undefined &&
+            document.getElementById(elemId).value !== '') {
+            return true;
+          } else {
+            alert(errorMessage);
+          }
+        } else {
+          alert('ubirchVerification not ready - are you sure that you loaded verification.js first?');
+        }
+        return false;
+      }
+
+    </script>
+</body>
+</html>
