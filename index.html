@@ -154,10 +154,10 @@
             Helper methods:
             <ul>
               <li>
-                <code>createCertificate</code> to create the JSON from a couple of input fields
+                <code>createJsonFromInputs</code> to create the JSON from a couple of input fields
                 (id of input field has to be the name of the param in the JSON):
                 <div>
-                  <pre><code>ubirchVerification.createCertificate({{ array of input ids }}, {{ documentRef }});</code></pre>
+                  <pre><code>ubirchVerification.createJsonFromInputs({{ array of input ids }}, {{ documentRef }});</code></pre>
                 </div>
               </li>
             </ul>
@@ -200,7 +200,7 @@
           check('tr', 'select test result')) {
           // helper to generate correct JSON from input fields
           // attention: ids of input fields have to be same as fields in anchored JSON
-          const genJson = ubirchVerification.createCertificate( ["pid", "td", "tid", "tr", "tt"], document);
+          const genJson = ubirchVerification.createJsonFromInputs( ["pid", "td", "tid", "tr", "tt"], document);
           document.getElementById('json-input').value = genJson;
         }
       }
