@@ -32,6 +32,22 @@ Attention:
 1. be sure to use the correct <code>{{Ubirch URL}}</code>
 2. params in the JSON have to be ordered alphabetically, no spaces
 
+### widget's host element
+
+Add a div tag to your html page in which the widget / the result of the verification will be displayed.
+Specify id of that div and push that selector to the <code>elementSelector</code>
+of the <code>UbirchVerification</code> constructor.
+
+    <div id="verification-widget"></div>
+    ...
+    <script>
+        const ubirchVerification = new UbirchVerification({
+            ...
+            elementSelector: '#verification-widget'
+        });
+        ...
+    </script>
+
 ### Insert verification.js
 
 Add <code>verification.js</code> script to your page:
@@ -42,7 +58,7 @@ Attention:
 1. Be sure to use the same <code>{{Ubirch URL}}</code> where you documents are anchored
 2. load verification.js before using it!
 
-### Create an <code>UbirchVerification</code> instance
+### Create a <code>UbirchVerification</code> instance
 
     const ubirchVerification = new UbirchVerification({
         algorithm: 'sha512',
