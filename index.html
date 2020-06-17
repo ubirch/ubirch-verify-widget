@@ -102,68 +102,9 @@
       </button>
     </div>
     <div id="verification-widget">
+    </div>
 
-    </div>
-    <div class="help">
-        <ol>
-            <li>
-                Add <code>verification.js</code> script to your page:
-                <div>
-                    <code>
-                        &lt;script src=&quot;{{Ubirch URL}}/verification.js&quot;&gt;&lt;/script&gt;
-                    </code>
-                </div>
-            </li>
-            <li>
-                Create an <code>UbirchVerification</code> instance:
-                <div>
-                    <pre><code>const ubirchVerification = new UbirchVerification({
-    algorithm: 'sha512',
-    elementSelector: '#verification-widget'
-});
-</code></pre>
-                </div>
-                Where:
-                <ul>
-                    <li>
-                        <code>algorithm</code> is hashing algorithm you need (possible values: <code>sha256</code>, <code>sha512</code> )
-                    </li>
-                    <li>
-                        <code>elementSelector</code> is widget's host element selector, e.g. <code>#verification-widget</code>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                Call methods:
-                <ul>
-                    <li>
-                        <code>verifyJSON</code> if you need to verify JSON:
-                        <div>
-                            <pre><code>ubirchVerification.verifyJSON({{ your JSON }});</code></pre>
-                        </div>
-                    </li>
-                    <li>
-                        <code>verifyHash</code> if you need to verify JSON:
-                        <div>
-                            <pre><code>ubirchVerification.verifyHash({{ your hash }});</code></pre>
-                        </div>
-                    </li>
-                </ul>
-            </li>
-          <li>
-            Helper methods:
-            <ul>
-              <li>
-                <code>createJsonFromInputs</code> to create the JSON from a couple of input fields
-                (id of input field has to be the name of the param in the JSON):
-                <div>
-                  <pre><code>ubirchVerification.createJsonFromInputs({{ array of input ids }}, {{ documentRef }});</code></pre>
-                </div>
-              </li>
-            </ul>
-          </li>
-        </ol>
-    </div>
+    <!-- Be sure to use the same {{Ubirch URL}} where you documents are anchored -->
     <script src="https://console.dev.ubirch.com/libs/verification/verification.js"></script>
     <script>
 
@@ -199,8 +140,8 @@
           check('tt', 'Insert time of test result') +
           check('tr', 'select test result')) {
           // helper to generate correct JSON from input fields
-          // attention: ids of input fields have to be same as fields in anchored JSON
-          const genJson = ubirchVerification.createJsonFromInputs( ["pid", "td", "tid", "tr", "tt"], document);
+          // attention: ids of input fields have to be same as field names in anchored JSON
+          const genJson = ubirchVerification.createJsonFromInputs( ["pid", "tid", "td", "tt", "tr"], document);
           document.getElementById('json-input').value = genJson;
         }
       }

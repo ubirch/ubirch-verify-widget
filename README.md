@@ -38,7 +38,9 @@ Add <code>verification.js</code> script to your page:
 
     <script src="{{Ubirch URL}}/libs/verification/verification.js"></script>;
 
-Attention: load verification.js before using it!
+Attention:
+1. Be sure to use the same <code>{{Ubirch URL}}</code> where you documents are anchored
+2. load verification.js before using it!
 
 ### Create an <code>UbirchVerification</code> instance
 
