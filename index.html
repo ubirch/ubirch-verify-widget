@@ -33,10 +33,21 @@
         code {
             background: lightgrey;
         }
+        .attention {
+          color: red;
+        }
     </style>
 </head>
 <body>
     <h1>Ubirch Verification Widget Example</h1>
+    <div class="example">
+      Click the link for testing to get input from URL:<br>
+      <a href="#pid=9ceb5551-d006-4648-8cf7-c7b1a1ddccb1&tid=FGXC-CL11-KDKC-P9XC-74MM&td=2020-06-12&tt=11:00:00&tr=negativ">
+        http(s)://&lt;SERVER:PORT&gt;/index.html#pid=9ceb5551-d006-4648-8cf7-c7b1a1ddccb1&tid=FGXC-CL11-KDKC-P9XC-74MM&td=2020-06-12&tt=11:00:00&tr=negativ
+      </a>
+        <br>
+        <p class="attention">Attention! You need to reload the page manually after opening the link to get input fields filled!!!!</p>
+    </div>
     <div class="example">
         <div class="input-field">
           <input placeholder="" type="text" id="pid">
@@ -108,12 +119,17 @@
     <script>
 
       let ubirchVerification;
+      let fragment;
       document.addEventListener("DOMContentLoaded", function() {
         // create UbirchVerification instance
         ubirchVerification = new UbirchVerification({
           algorithm: 'sha512',
           elementSelector: '#verification-widget'
         });
+        fragment = getFragment();
+        if (fragment) {
+          setDataIntoForm(fragment);
+        }
       });
 
       // use ubirchVerification.verifyJSON( {{ your JSON }} ) to verify a json
@@ -162,13 +178,25 @@
       const testhash = '06VMh9w0zBrfPMUmDpx2HSHYCi1EKYMRa3i5MdmaakOa9MQfgJiWMOvL2pwxWuHf4g685Nq9ymVag51craQ4fQ==';
 
       function setTestData() {
-        var allParams = testdata.split('&').map(function (value) {
-            var data = value.split('=');
-            return {
-              key : data[0],
-              value : decodeURIComponent(data[1])
-            }
-          });
+        setDataIntoForm(testdata);
+      }
+
+      function getFragment() {
+        const hash = window.location.hash;
+        if (hash) {
+          return hash.slice(1);
+        }
+        return undefined;
+      }
+
+      function setDataIntoForm(data) {
+        var allParams = data.split('&').map(function (value) {
+          var data = value.split('=');
+          return {
+            key : data[0],
+            value : decodeURIComponent(data[1])
+          }
+        });
         allParams.forEach(param => {
           if (param.key + document.getElementById(param.key)) {
             document.getElementById(param.key).value = param.value;
