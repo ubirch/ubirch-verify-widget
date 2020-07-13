@@ -91,25 +91,111 @@ You can verify the hashed JSON directly by
 
 Attention: use the hashing algorithm defined in the UbirchVerification constructor's <code>algorithm</code> field
 
-### Generate JSON from input fields
-
-If you have a form with input fields for the params of the anchored JSON and all input fields
-deliver the params as strings, the helper function <code>createJsonFromInputs</code>
-can generate the JSON from your input fields for you.
-Then you can verify the JSON by <code>verifyJSON</code> in a separate step.
-
-    ubirchVerification.createJsonFromInputs({{ array of input ids }}, {{ documentRef }})
-
-* param1: array of input ids; id of input fields have to be the name of the param in the JSON
-* param2: handle to the document
-
-Example:
-
-    ubirchVerification.createJsonFromInputs( ["pid", "td", "tid", "tr", "tt"], document);
-
 ### Generate hash from JSON
 
 Helper function to generate hash from JSON (for debugging or testing).
 
 Before hashing the params of the JSON will be ordered and trimmed.
 Then the JSON will be hashed with the hash algorithm defined in ubirchVerification constructor's <code>algorithm</code> field
+
+## Ubirch Form Verification
+
+There is a convenient SubClass ubirchFormVerification for a verification based on a form with input fields.
+It's also part of the verification.js lib.
+It provides following functionality:
+
+   * get params as string from fragment OR - if no fragment set - from query of url
+   * insert params into form fields
+   * check if form fields are filled
+   * Create JSON certificate from form fields
+
+### Insert verification.js
+
+Same as for UbirchVerification widget
+
+### Create a <code>UbirchFormVerification</code> instance
+
+    const ubirchFormVerification = new UbirchFormVerification({
+      algorithm: 'sha512',
+      elementSelector: '#verification-widget',
+      formIds: ["pid", "tid", "td", "tt", "tr"]
+    });
+
+Params:
+
+Same as for UbirchVerification widget. Additional:
+
+* <code>formIds</code> string array with param ids used in the anchored JSON
+    - here the id's can be added in any order; attention: in the anchored JSON document the id's have to be in alphabetical order!
+    - attention: you must not use id "id" (TYPO3 uses this id for routing and ignores query string if it contains an id "id")
+* <code>missingFieldErrorMessages</code> string array of error message for each formId in the same order;
+ will be displayed if form is not filled completely when user tries to verify
+
+### create form
+
+Create a form on the page with input fields for the params of the verification document.
+For every required param define an input field; set the param id as id of the input:
+
+Example:
+
+    {"did":"1a0dca1f-caf8-4776-bda9-909b4d9b6b1f","fn":"Max","ln":"Mustermann","d":"2019-06-12","v":"3.25"}
+
+
+    <div class="input-field">
+      <input type="text" id="did">
+      <label for="did">DocumentID:</label>
+    </div>
+    <div class="input-field">
+      <input type="text" id="fn">
+      <label for="fn">Firstname:</label>
+    </div>
+    <div class="input-field">
+      <input type="text" id="ln">
+      <label for="ln">Lastname:</label>
+    </div>
+    ...
+
+### get params from fragment OR query of url (optional)
+
+* Tries to read params from curl as a string
+* IF fragment is given the params are read from fragment
+* IF NO fragment is given the params are tried be read from query string
+* pattern:
+    <code>IDNAME1=PARAMVALUE1&IDNAME2=PARAMVALUE2&...</code>
+ 
+ Call:
+ 
+        var paramStr = ubirchFormVerification.getFormParamsFromUrl(window);
+
+### Insert params into form (optional)
+
+If you want to insert given params (test data as string OR read from url) into form fields you can call <code>setDataIntoForm</code>:
+
+    const paramStr = "pid=9ceb5551-d006-4648-8cf7-c7b1a1ddccb1&tid=FGXC-CL11-KDKC-P9XC-74MM&td=2020-06-12&tt=11:00:00&tr=negativ";
+    ubirchFormVerification.setDataIntoForm(paramStr, document);
+
+### Generate JSON from input fields
+
+If you have a form with input fields for all params you can create the JSON document by calling
+<code>getJsonFromInputs</code>.
+
+* in the created JSON all params are put together that are defined in constructors
+<code>formIds</code> parameter
+* the values are taken from the input fields with the same id
+* checks if form is filled completely; throws an <code>IUbirchFormError</code>, if any fields are empty
+* <code>IUbirchFormError.missingIds</code> contains a list of all missing ids
+* handle the error yourself and inform user about the missing fields
+* if no error occurs the created JSON is returned;
+then you can verify the JSON by <code>verifyJSON</code> in a separate step.
+
+
+        try {
+
+          const genJson = ubirchFormVerification.getJsonFromInputs(document);
+          ubirchFormVerification.verifyJSON( genJson );
+
+        } catch (e) {
+            e.missingIds.forEach( 
+                id => // handle missing field
+            );
+        }

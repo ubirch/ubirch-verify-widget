@@ -114,21 +114,28 @@
     </div>
     <div id="verification-widget"></div>
 
-    <!-- Be sure to use the same {{Ubirch URL}} where you documents are anchored -->
-    <script src="https://console.demo.ubirch.com/libs/verification/verification.js"></script>
+    <!-- Be sure to use the same {{Ubirch URL}} where you documents are anchored
+    <script src="https://console.dev.ubirch.com/libs/verification/verification.js"></script> -->
+    <script src="http://localhost:8080/verification.js"></script>
     <script>
-
       let ubirchVerification;
-      let fragment;
+      let missingFieldErrorMessages = {
+        pid: 'Insert Pseudonym',
+        tid: 'Insert sample ID',
+        td: 'Insert date of test result',
+        tt: 'Insert time of test result',
+        tr: 'select test result'
+      };
       document.addEventListener("DOMContentLoaded", function() {
         // create UbirchVerification instance
-        ubirchVerification = new UbirchVerification({
+        ubirchVerification = new UbirchFormVerification({
           algorithm: 'sha512',
-          elementSelector: '#verification-widget'
+          elementSelector: '#verification-widget',
+          formIds: ["pid", "tid", "td", "tt", "tr"]
         });
-        fragment = getFragment();
-        if (fragment) {
-          setDataIntoForm(fragment);
+        var paramStr = ubirchVerification.getFormParamsFromUrl(window);
+        if (paramStr) {
+          ubirchVerification.setDataIntoForm(paramStr, document);
         }
       });
 
@@ -149,15 +156,18 @@
       }
 
       function getJsonFromInputs() {
-        if (check('pid', 'Insert Pseudonym') +
-          check('tid', 'Insert sample ID') +
-          check('td', 'Insert date of test result') +
-          check('tt', 'Insert time of test result') +
-          check('tr', 'select test result')) {
-          // helper to generate correct JSON from input fields
-          // attention: ids of input fields have to be same as field names in anchored JSON
-          const genJson = ubirchVerification.createJsonFromInputs( ["pid", "tid", "td", "tt", "tr"], document);
+        try {
+          const genJson = ubirchVerification.getJsonFromInputs(document);
           document.getElementById('json-input').value = genJson;
+        } catch (e) {
+          msg = "Please fill out form completely!\n";
+          if (e.missingIds && e.missingIds.length > 0) {
+            e.missingIds.forEach(field =>
+              msg += missingFieldErrorMessages && missingFieldErrorMessages[field] ?
+                "\n" + missingFieldErrorMessages[field] : ''
+            );
+          }
+          window.alert(msg);
         }
       }
 
@@ -178,30 +188,7 @@
       const testhash = '06VMh9w0zBrfPMUmDpx2HSHYCi1EKYMRa3i5MdmaakOa9MQfgJiWMOvL2pwxWuHf4g685Nq9ymVag51craQ4fQ==';
 
       function setTestData() {
-        setDataIntoForm(testdata);
-      }
-
-      function getFragment() {
-        const hash = window.location.hash;
-        if (hash) {
-          return hash.slice(1);
-        }
-        return undefined;
-      }
-
-      function setDataIntoForm(data) {
-        var allParams = data.split('&').map(function (value) {
-          var data = value.split('=');
-          return {
-            key : data[0],
-            value : decodeURIComponent(data[1])
-          }
-        });
-        allParams.forEach(param => {
-          if (param.key + document.getElementById(param.key)) {
-            document.getElementById(param.key).value = param.value;
-          }
-        });
+        ubirchVerification.setDataIntoForm(testdata, document);
       }
 
       function setTestJson() {
