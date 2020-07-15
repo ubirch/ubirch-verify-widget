@@ -205,3 +205,91 @@ then you can verify the JSON by <code>verifyJSON</code> in a separate step.
                 id => // handle missing field
             );
         }
+
+## Complete Example
+
+
+    <script src="https://console.dev.ubirch.com/libs/verification/verification.js"></script>
+    <script>
+          let ubirchVerification;
+          let missingFieldErrorMessages = {
+            pid: 'Insert Pseudonym',
+            tid: 'Insert sample ID',
+            td: 'Insert date of test result',
+            tt: 'Insert time of test result',
+            tr: 'Insert test result'
+          };
+    
+          document.addEventListener("DOMContentLoaded", function() {
+            // create UbirchVerification instance
+            ubirchVerification = new UbirchFormVerification({
+              algorithm: 'sha512',
+              elementSelector: '#verification-widget',
+              formIds: ["pid", "tid", "td", "tt", "tr"]
+            });
+            var paramStr = ubirchVerification.getFormParamsFromUrl(window);
+            if (paramStr) {
+              ubirchVerification.setDataIntoForm(paramStr, document);
+            }
+          });
+    
+          function verifyForm() {
+            try {
+              const genJson = ubirchVerification.getJsonFromInputs(document);
+              ubirchVerification.verifyJSON(genJson);
+            } catch (e) {
+
+            // handle the error yourself and inform user about the missing fields
+
+              msg = "Please fill out form completely!\n";
+              if (e.missingIds && e.missingIds.length > 0) {
+                e.missingIds.forEach(field =>
+                  msg += missingFieldErrorMessages && missingFieldErrorMessages[field] ?
+                    "\n" + missingFieldErrorMessages[field] : ''
+                );
+              }
+              window.alert(msg);
+              
+              // end of error handling for missing fields
+
+            }
+          }
+    </script>
+    
+    <form id="gen_form" name="gen_form" onsubmit="verifyForm(); return false;">
+      <div class="input-field">
+        <input placeholder="" type="text" id="pid">
+        <label for="pid">Pseudonym:</label>
+      </div>
+      <div class="input-field">
+        <input placeholder="" type="text" id="tid">
+        <label for="tid">sample ID:</label>
+      </div>
+      <div class="input-field">
+        <input placeholder="" type="text" id="td"
+               class="datepicker">
+        <label for="td">date test result:</label>
+      </div>
+      <div class="input-field">
+        <input placeholder="" type="text" id="tt"
+               class="timepicker">
+        <label for="tt">time test result:</label>
+      </div>
+    
+      <div class="input-field">
+        <select id="tr" tabindex="-1">
+          <option value="" disabled="" selected="">please select..</option>
+          <option value="positiv">positive</option>
+          <option value="negativ">negative</option>
+          <option value="unklar">not clear</option>
+        </select>
+        <label for="tr">test result:</label>
+      </div>
+    
+      <!-- here will be displayed the result of the verification -->
+      <div id="verification-widget"></div>
+    
+      <div class="input-field">
+          <input type="submit" class="btn btnwhite" value="verify">
+      </div>
+    </form>
