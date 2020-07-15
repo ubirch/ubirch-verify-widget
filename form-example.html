@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>ubirch Verification Form Example</title>
+    <style>
+      .example {
+        padding: 10px;
+        border: 1px solid black;
+        margin-bottom: 10px;
+      }
+
+      #verification-widget {
+        padding: 10px;
+        border: 1px solid black;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://console.dev.ubirch.com/libs/verification/verification.js"></script>
+    <script>
+      let ubirchVerification;
+      let missingFieldErrorMessages = {
+        f: 'Insert family name',
+        g: 'Insert given name(s)',
+        b: 'Insert birth date',
+        p: 'Insert passport or other id number',
+        i: 'Insert internal laboratory id',
+        d: 'Insert test date and time',
+        t: 'Insert test type',
+        r: 'Insert test result (positive, negative, unknown)',
+        s: 'Insert random number',
+      };
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // create UbirchVerification instance
+        ubirchVerification = new UbirchFormVerification({
+          algorithm: 'sha512',
+          elementSelector: '#verification-widget',
+          formIds: ["f", "g", "b", "p", "i", "d", "t", "r", "s"]
+        });
+        var paramStr = ubirchVerification.getFormParamsFromUrl(window);
+        if (paramStr) {
+          ubirchVerification.setDataIntoForm(paramStr, document, ';');
+          verifyForm();
+        }
+      });
+
+      function verifyForm() {
+        try {
+          const genJson = ubirchVerification.getJsonFromInputs(document);
+          ubirchVerification.verifyJSON(genJson);
+        } catch (e) {
+
+          // handle the error yourself and inform user about the missing fields
+
+          msg = "Please fill out form completely!\n";
+          if (e.missingIds && e.missingIds.length > 0) {
+            e.missingIds.forEach(field =>
+              msg += missingFieldErrorMessages && missingFieldErrorMessages[field] ?
+                "\n" + missingFieldErrorMessages[field] : ''
+            );
+          }
+          window.alert(msg);
+
+          // end of error handling for missing fields
+
+        }
+      }
+    </script>
+
+    <div class="example">
+      <form id="gen_form" name="gen_form" onsubmit="verifyForm(); return false;">
+        <div class="input-field">
+          <label for="f">family name:</label>
+          <input placeholder="" type="text" id="f">
+        </div>
+        <div class="input-field">
+          <label for="g">given name(s):</label>
+          <input placeholder="" type="text" id="g">
+        </div>
+        <div class="input-field">
+          <label for="b">birth date:</label>
+          <input placeholder="" type="text" id="b">
+        </div>
+        <div class="input-field">
+          <label for="p">passport or other id number:</label>
+          <input placeholder="" type="text" id="p">
+        </div>
+        <div class="input-field">
+          <label for="i">internal laboratory id:</label>
+          <input placeholder="" type="text" id="i">
+        </div>
+        <div class="input-field">
+          <label for="d">test date and time:</label>
+          <input placeholder="" type="text" id="d">
+        </div>
+        <div class="input-field">
+          <label for="t">test type:</label>
+          <input placeholder="" type="text" id="t">
+        </div>
+        <div class="input-field">
+          <label for="r">test result (positive, negative, unknown):</label>
+          <input placeholder="" type="text" id="r">
+        </div>
+        <div class="input-field">
+          <label for="s">random number:</label>
+          <input placeholder="" type="text" id="s">
+        </div>
+
+        <!-- here will be displayed the result of the verification -->
+        <div id="verification-widget"></div>
+
+        <!--
+        <div class="input-field">
+          <input type="submit" class="btn btnwhite" value="verify">
+        </div>
+        -->
+      </form>
+    </div>
+  </body>
+</html>
