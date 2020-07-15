@@ -146,7 +146,12 @@
         });
         var paramStr = ubirchVerification.getFormParamsFromUrl(window);
         if (paramStr) {
+          // separator is an optional parameter of setDataIntoForm, default: '&'
+          // here we check, if we got paramStr from fragment OR query
+          // for testing both the default and specific separator
+          // -> normally you know which separator your app uses
           const separator = window.location.hash ? '%SEP%' : '&';
+
           ubirchVerification.setDataIntoForm(paramStr, document, separator);
         }
       });
