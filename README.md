@@ -128,8 +128,6 @@ Same as for UbirchVerification widget. Additional:
 * <code>formIds</code> string array with param ids used in the anchored JSON
     - here the id's can be added in any order; attention: in the anchored JSON document the id's have to be in alphabetical order!
     - attention: you must not use id "id" (TYPO3 uses this id for routing and ignores query string if it contains an id "id")
-* <code>missingFieldErrorMessages</code> string array of error message for each formId in the same order;
- will be displayed if form is not filled completely when user tries to verify
 
 ### create form
 
@@ -173,6 +171,14 @@ If you want to insert given params (test data as string OR read from url) into f
 
     const paramStr = "pid=9ceb5551-d006-4648-8cf7-c7b1a1ddccb1&tid=FGXC-CL11-KDKC-P9XC-74MM&td=2020-06-12&tt=11:00:00&tr=negativ";
     ubirchFormVerification.setDataIntoForm(paramStr, document);
+    
+You can add an optional parameter to define the separator e.g. if you get params from fragment.
+The whole string is search in the paramStr, so you can e.g. define "%SEP%" as the separator between params.
+Default is "&" which is the normal separator for query params.
+
+    const paramStr = "pid=9ceb5551-d006-4648-8cf7-c7b1a1ddccb1;tid=FGXC-CL11-KDKC-P9XC-74MM;td=2020-06-12;tt=11:00:00;tr=negativ";
+    ubirchFormVerification.setDataIntoForm(paramStr, document, ';');
+
 
 ### Generate JSON from input fields
 

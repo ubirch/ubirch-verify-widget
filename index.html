@@ -41,9 +41,21 @@
 <body>
     <h1>Ubirch Verification Widget Example</h1>
     <div class="example">
-      Click the link for testing to get input from URL:<br>
-      <a href="#pid=9ceb5551-d006-4648-8cf7-c7b1a1ddccb1&tid=FGXC-CL11-KDKC-P9XC-74MM&td=2020-06-12&tt=11:00:00&tr=negativ">
-        http(s)://&lt;SERVER:PORT&gt;/index.html#pid=9ceb5551-d006-4648-8cf7-c7b1a1ddccb1&tid=FGXC-CL11-KDKC-P9XC-74MM&td=2020-06-12&tt=11:00:00&tr=negativ
+      Reset:<br>
+      <a href="index.html">
+        http(s)://&lt;SERVER:PORT&gt;/index.html
+      </a>
+    </div>
+    <div class="example">
+      Click the link for testing to get input from URL query params:<br>
+      <a href="?pid=9ceb5551-d006-4648-8cf7-c7b1a1ddccb1&tid=FGXC-CL11-KDKC-P9XC-74MM&td=2020-06-12&tt=11:00:00&tr=negativ">
+        http(s)://&lt;SERVER:PORT&gt;/index.html?pid=9ceb5551-d006-4648-8cf7-c7b1a1ddccb1&tid=FGXC-CL11-KDKC-P9XC-74MM&td=2020-06-12&tt=11:00:00&tr=negativ
+      </a>
+    </div>
+    <div class="example">
+      Click the link for testing to get input from URL fragment:<br>
+      <a href="#pid=9ceb5551-d006-4648-8cf7-c7b1a1ddccb1%SEP%tid=FGXC-CL11-KDKC-P9XC-74MM%SEP%td=2020-06-12%SEP%tt=11:00:00%SEP%tr=negativ">
+        http(s)://&lt;SERVER:PORT&gt;/index.html#pid=9ceb5551-d006-4648-8cf7-c7b1a1ddccb1%SEP%tid=FGXC-CL11-KDKC-P9XC-74MM%SEP%td=2020-06-12%SEP%tt=11:00:00%SEP%tr=negativ
       </a>
         <br>
         <p class="attention">Attention! You need to reload the page manually after opening the link to get input fields filled!!!!</p>
@@ -134,7 +146,8 @@
         });
         var paramStr = ubirchVerification.getFormParamsFromUrl(window);
         if (paramStr) {
-          ubirchVerification.setDataIntoForm(paramStr, document);
+          const separator = window.location.hash ? '%SEP%' : '&';
+          ubirchVerification.setDataIntoForm(paramStr, document, separator);
         }
       });
 
