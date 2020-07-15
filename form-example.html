@@ -18,7 +18,7 @@
     </style>
   </head>
   <body>
-    <script src="https://console.dev.ubirch.com/libs/verification/verification.js"></script>
+    <script src="https://console.prod.ubirch.com/libs/verification/verification.js"></script>
     <script>
       let ubirchVerification;
       let missingFieldErrorMessages = {
@@ -36,7 +36,7 @@
       document.addEventListener("DOMContentLoaded", function () {
         // create UbirchVerification instance
         ubirchVerification = new UbirchFormVerification({
-          algorithm: 'sha512',
+          algorithm: 'sha256',
           elementSelector: '#verification-widget',
           formIds: ["f", "g", "b", "p", "i", "d", "t", "r", "s"]
         });
