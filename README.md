@@ -62,13 +62,16 @@ Attention:
 
     const ubirchVerification = new UbirchVerification({
         algorithm: 'sha512',
-        elementSelector: '#verification-widget'
+        elementSelector: '#verification-widget',
+        language: 'en'  // OPTIONAL!!
     });
 
 
 Where:
 * <code>algorithm</code> is hashing algorithm you need (possible values: <code>sha256</code>, <code>sha512</code> )
 * <code>elementSelector</code> is widget's host element selector (id), e.g. <code>#verification-widget</code>
+* <code>language</code> optional param to set language of widget strings; currently available: 'de'/'en';
+default language is 'de'
 
 ### Verify JSON
 
@@ -97,6 +100,29 @@ Helper function to generate hash from JSON (for debugging or testing).
 
 Before hashing the params of the JSON will be ordered and trimmed.
 Then the JSON will be hashed with the hash algorithm defined in ubirchVerification constructor's <code>algorithm</code> field
+
+### Set text message
+
+Beneath setting the language of the widget you can set an individual message:
+
+    ubirchVerification.setMessageString( {{ key }}, {{ info text }}, {{ header (optional) }} )
+
+Example:
+      
+      ubirchVerification.setMessageString('FAIL',
+        'No blockchain anchor for given data\nPlease check your inserted data', 'Verification Failed!');
+
+Keys:
+
+* PENDING
+* SUCCESS
+* FAIL
+* CERTIFICATE_DATA_MISSING
+* VERIFICATION_FAILED
+* CERTIFICATE_ID_CANNOT_BE_FOUND
+* VERIFICATION_FAILED_EMPTY_RESPONSE
+* VERIFICATION_FAILED_MISSING_SEAL_IN_RESPONSE
+* UNKNOWN_ERROR
 
 ## Ubirch Form Verification
 

@@ -142,8 +142,12 @@
         ubirchVerification = new UbirchFormVerification({
           algorithm: 'sha512',
           elementSelector: '#verification-widget',
-          formIds: ["pid", "tid", "td", "tt", "tr"]
+          formIds: ["pid", "tid", "td", "tt", "tr"],
+          language: 'en'
         });
+        ubirchVerification.setMessageString('FAIL',
+          'No blockchain anchor for given data\nPlease check your inserted data', 'Verification Failed!');
+
         var paramStr = ubirchVerification.getFormParamsFromUrl(window);
         if (paramStr) {
           // separator is an optional parameter of setDataIntoForm, default: '&'
