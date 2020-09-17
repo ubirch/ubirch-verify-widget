@@ -63,7 +63,8 @@ Attention:
     const ubirchVerification = new UbirchVerification({
         algorithm: 'sha512',
         elementSelector: '#verification-widget',
-        language: 'en'  // OPTIONAL!!
+        language: 'en',  // OPTIONAL!!
+        HIGHLIGHT_PAGE_AFTER_VERIFICATION: true  // OPTIONAL!!
     });
 
 
@@ -72,6 +73,11 @@ Where:
 * <code>elementSelector</code> is widget's host element selector (id), e.g. <code>#verification-widget</code>
 * <code>language</code> optional param to set language of widget strings; currently available: 'de'/'en';
 default language is 'de'
+* <code>HIGHLIGHT_PAGE_AFTER_VERIFICATION</code> optional param, if set to true the whole page will be highlighted
+green or red for a short time interval depending on success or failure of the verification;
+done by changing the style of the <main> HTML element on the page:
+classes 'flashgreen' or 'flashred' (need to be defined in css of the page!) are added and removed after some seconds;
+default: false
 
 ### Verify JSON
 
@@ -85,6 +91,12 @@ but before hashing the JSON they will be ordered and trimmed.
 
 So, if you anchor a document manually be sure to ordered the params in the JSON alphabetically
 and remove all spaces.
+
+Hint: historically some things are anchored in a JSON without alphabetically ordered params.
+In this case structure the JSON as it is anchored and call it with optional sort param:
+
+    verifyJSON( {{ your JSON }}, false )
+  
 
 ### Verify hash
 
@@ -144,7 +156,12 @@ Same as for UbirchVerification widget
     const ubirchFormVerification = new UbirchFormVerification({
       algorithm: 'sha512',
       elementSelector: '#verification-widget',
+      language: 'en',  // OPTIONAL!!
+      HIGHLIGHT_PAGE_AFTER_VERIFICATION: true  // OPTIONAL!!
+
       formIds: ["pid", "tid", "td", "tt", "tr"]
+      paramsFormIdsMapping: ["probenId", "testId", "testDate", "testTime", "testResult"],  // OPTIONAL!!
+      CHECK_FORM_FILLED: false  // OPTIONAL!!
     });
 
 Params:
@@ -154,6 +171,17 @@ Same as for UbirchVerification widget. Additional:
 * <code>formIds</code> string array with param ids used in the anchored JSON
     - here the id's can be added in any order; attention: in the anchored JSON document the id's have to be in alphabetical order!
     - attention: you must not use id "id" (TYPO3 uses this id for routing and ignores query string if it contains an id "id")
+
+* <code>paramsFormIdsMapping</code> optional param, used if query/fragment params need to be mapped on form field ids
+    - historical reasons e.g. needed if form is called from a QR code with url params for the form 
+    BUT the param names are different from the JSON params that are anchored
+    - the formIds are mapped to the paramsFormIdsMapping at the array index ->
+     formIds and paramsFormIdsMapping have to have the same length
+
+* <code>CHECK_FORM_FILLED</code> optional param
+    - default: true; if NOT set the form is checked for that all fields are filled and verification is not processed
+     and user gets informed about the missing fields
+    - if set to false no check is performed and verification is processed with incomplete data
 
 ### create form
 
