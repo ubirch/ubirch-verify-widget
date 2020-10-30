@@ -106,12 +106,29 @@ You can verify the hashed JSON directly by
 
 Attention: use the hashing algorithm defined in the UbirchVerification constructor's <code>algorithm</code> field
 
+### Helper: Sort and trim JSON
+
+Helper function to sort (recursively, if not prevented) and trim JSON
+
+    ubirchVerification.formatJSON( {{ jsonStr JSON }}, {{ sortorder boolean = true }});
+
+Where:
+* <code>jsonStr</code> is the JSON e.g. in prettyprint format and keys in any order
+* <code>sortorder</code> Optional! Default: true; set to false if the keys should not be sorted (recursively)
+
+THis function is called from verifyJSON.
+This call can be used for debugging or testing to check which string is generated from given JSON data
+before hashing and verifying.
+
 ### Generate hash from JSON
 
 Helper function to generate hash from JSON (for debugging or testing).
 
-Before hashing the params of the JSON will be ordered and trimmed.
-Then the JSON will be hashed with the hash algorithm defined in ubirchVerification constructor's <code>algorithm</code> field
+    ubirchVerification.createHash( {{ jsonStr JSON }} );
+
+Before hashing the params of the JSON will be ordered and trimmed by calling <code>ubirchVerification.formatJSON</code>.
+Then the JSON will be hashed with the hash algorithm defined in
+ubirchVerification constructor's <code>algorithm</code> field
 
 ### Set text message
 
