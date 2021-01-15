@@ -1,0 +1,17 @@
+$success-color: #53af32;
+$fail-color: #e40146;
+
+.ubirch {
+    &-verification {
+        &-headline {
+            font-size: 1.05em;
+            font-weight: 700;
+        }
+        &-success {
+            color: $success-color;
+        }
+        &-fail {
+            color: $fail-color;
+        }
+    }
+}

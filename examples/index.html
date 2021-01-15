@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubirch Verification Widget Example</title>
+    <style>
+        .example {
+            padding: 10px;
+            border: 1px solid black;
+            margin-bottom: 10px;
+        }
+
+        #verification-widget {
+            padding: 10px;
+            border: 1px solid black;
+            margin-bottom: 10px;
+        }
+
+        #hash-input {
+          width: 800px;
+        }
+
+        .help {
+            padding: 10px;
+            border: 1px solid black;
+        }
+
+        .help li {
+            margin-bottom: 10px;
+        }
+
+        code {
+            background: lightgrey;
+        }
+        .attention {
+          color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ubirch Verification Widget Example</h1>
+    <div class="example">
+      Reset:<br>
+      <a href="index.html">
+        http(s)://&lt;SERVER:PORT&gt;/index.html
+      </a>
+    </div>
+    <div class="example">
+      Click the link for testing to get input from URL query params:<br>
+      <a href="?pid=9ceb5551-d006-4648-8cf7-c7b1a1ddccb1&tid=FGXC-CL11-KDKC-P9XC-74MM&td=2020-06-12&tt=11:00:00&tr=negativ">
+        http(s)://&lt;SERVER:PORT&gt;/index.html?pid=9ceb5551-d006-4648-8cf7-c7b1a1ddccb1&tid=FGXC-CL11-KDKC-P9XC-74MM&td=2020-06-12&tt=11:00:00&tr=negativ
+      </a>
+    </div>
+    <div class="example">
+      Click the link for testing to get input from URL fragment:<br>
+      <a href="#pid=9ceb5551-d006-4648-8cf7-c7b1a1ddccb1%SEP%tid=FGXC-CL11-KDKC-P9XC-74MM%SEP%td=2020-06-12%SEP%tt=11:00:00%SEP%tr=negativ">
+        http(s)://&lt;SERVER:PORT&gt;/index.html#pid=9ceb5551-d006-4648-8cf7-c7b1a1ddccb1%SEP%tid=FGXC-CL11-KDKC-P9XC-74MM%SEP%td=2020-06-12%SEP%tt=11:00:00%SEP%tr=negativ
+      </a>
+        <br>
+        <p class="attention">Attention! You need to reload the page manually after opening the link to get input fields filled!!!!</p>
+    </div>
+    <div class="example">
+        <div class="input-field">
+          <input placeholder="" type="text" id="pid">
+          <label for="pid">Pseudonym:</label>
+        </div>
+        <div class="input-field">
+          <input placeholder="" type="text" id="tid">
+          <label for="tid">sample ID:</label>
+        </div>
+        <div class="input-field">
+          <input placeholder="" type="text" id="td"
+                 class="datepicker">
+          <label for="td">date test result:</label>
+        </div>
+        <div class="input-field">
+          <input placeholder="" type="text" id="tt"
+                 class="timepicker">
+          <label for="tt">time test result:</label>
+        </div>
+
+        <div class="input-field">
+          <select id="tr" tabindex="-1">
+            <option value="" disabled="" selected="">please select..</option>
+            <option value="positiv">positive</option>
+            <option value="negativ">negative</option>
+            <option value="unklar">not clear</option>
+          </select>
+          <label for="tr">test result:</label>
+        </div>
+        <div class="input-field">
+          <button onclick="setTestData()">
+            Insert Test Data</button>
+          <button onclick="getJsonFromInputs()">
+            get JSON from Inputs</button>
+        </div>
+    </div>
+
+    <div class="example">
+      <div class="input-field">
+        <label for="json-input">JSON:</label>
+        <textarea rows="10" cols="80" placeholder="" type="text" id="json-input"></textarea>
+      </div>
+      <button id="insert-test-json" onclick="setTestJson()">
+        Insert Test JSON
+      </button>
+      <button id="hash-from-json" onclick="getHashForJson()">
+        get hash from JSON
+      </button>
+      <button id="json-test" onclick="verifyJson()">
+        Test JSON Verification
+      </button>
+    </div>
+    <div class="example">
+      <div class="input-field">
+        <label for="hash-input">hash:</label>
+        <input placeholder="" type="text" id="hash-input">
+      </div>
+      <button id="insert-test-hash" onclick="setTestHash()">
+        Insert Test hash
+      </button>
+      <button id="hash-test" onclick="verifyHash()">
+          Test hash verification
+      </button>
+    </div>
+    <div id="verification-widget"></div>
+
+    <!-- Be sure to use the same {{Ubirch URL}} where you documents are anchored -->
+    <script src="https://console.dev.ubirch.com/libs/verification/verification.js"></script>
+    <script>
+      let ubirchVerification;
+      let missingFieldErrorMessages = {
+        pid: 'Insert Pseudonym',
+        tid: 'Insert sample ID',
+        td: 'Insert date of test result',
+        tt: 'Insert time of test result',
+        tr: 'select test result'
+      };
+      document.addEventListener("DOMContentLoaded", function() {
+        // create UbirchVerification instance
+        ubirchVerification = new UbirchFormVerification({
+          algorithm: 'sha512',
+          elementSelector: '#verification-widget',
+          formIds: ["pid", "tid", "td", "tt", "tr"],
+          language: 'en'
+        });
+        ubirchVerification.setMessageString('FAIL',
+          'No blockchain anchor for given data\nPlease check your inserted data', 'Verification Failed!');
+
+        var paramStr = ubirchVerification.getFormParamsFromUrl(window);
+        if (paramStr) {
+          // separator is an optional parameter of setDataIntoForm, default: '&'
+          // here we check, if we got paramStr from fragment OR query
+          // for testing both the default and specific separator
+          // -> normally you know which separator your app uses
+          const separator = window.location.hash ? '%SEP%' : '&';
+
+          ubirchVerification.setDataIntoForm(paramStr, document, separator);
+        }
+      });
+
+      // use ubirchVerification.verifyJSON( {{ your JSON }} ) to verify a json
+      // attention: params in the JSON have to be ordered alphabetically, no spaces
+      function verifyJson() {
+        if (check('json-input', 'Insert JSON')) {
+          ubirchVerification.verifyJSON(document.getElementById('json-input').value);
+        }
+      }
+
+      // use ubirchVerification.verifyHash( {{ your hash }} ) to verify a hash
+      // attention: be sure to use the correct hash algorithm in ubirchVerification constructor
+      function verifyHash() {
+        if (check('hash-input', 'Insert hash or generate from JSON')) {
+          ubirchVerification.verifyHash(document.getElementById('hash-input').value);
+        }
+      }
+
+      function getJsonFromInputs() {
+        try {
+          const genJson = ubirchVerification.getJsonFromInputs(document);
+          document.getElementById('json-input').value = genJson;
+        } catch (e) {
+          msg = "Please fill out form completely!\n";
+          if (e.missingIds && e.missingIds.length > 0) {
+            e.missingIds.forEach(field =>
+              msg += missingFieldErrorMessages && missingFieldErrorMessages[field] ?
+                "\n" + missingFieldErrorMessages[field] : ''
+            );
+          }
+          window.alert(msg);
+        }
+      }
+
+      function getHashForJson() {
+        if (check('json-input', 'Insert JSON')) {
+          // helper to generate hash from JSON (for debugging or testing)
+          // attention: be sure to use the correct hash algorithm in ubirchVerification constructor
+          const genHash = ubirchVerification.createHash(document.getElementById('json-input').value);
+          document.getElementById('hash-input').value = genHash;
+        }
+      }
+
+      // ############## helpers for the example to insert test data into fields #####################
+
+      // testdata, anchored on every ubirch stage
+      const testdata = "pid=9ceb5551-d006-4648-8cf7-c7b1a1ddccb1&tid=FGXC-CL11-KDKC-P9XC-74MM&td=2020-06-12&tt=11:00:00&tr=negativ";
+      const testjson = `{"pid":"9ceb5551-d006-4648-8cf7-c7b1a1ddccb1", "tid":"FGXC-CL11-KDKC-P9XC-74MM", "td":"2020-06-12", "tt":"11:00:00", "tr":"negativ"}`;
+      const testhash = '06VMh9w0zBrfPMUmDpx2HSHYCi1EKYMRa3i5MdmaakOa9MQfgJiWMOvL2pwxWuHf4g685Nq9ymVag51craQ4fQ==';
+
+      function setTestData() {
+        ubirchVerification.setDataIntoForm(testdata, document);
+      }
+
+      function setTestJson() {
+        document.getElementById('json-input').value = testjson;
+      }
+
+      function setTestHash() {
+        document.getElementById('hash-input').value = testhash;
+      }
+
+      // helper to check that ubirchVerification instance is initialized and required input field are set
+      function check(elemId, errorMessage) {
+        if (ubirchVerification !== undefined) {
+          if (document.getElementById(elemId).value !== undefined &&
+            document.getElementById(elemId).value !== '') {
+            return true;
+          } else {
+            alert(errorMessage);
+          }
+        } else {
+          alert('ubirchVerification not ready - are you sure that you loaded verification.js first?');
+        }
+        return false;
+      }
+
+    </script>
+</body>
+</html>
