@@ -1,4 +1,4 @@
-import UbirchVerificationWidget from "./node_modules/@ubirch/ubirch-verification-js";
+import { UbirchVerificationWidget } from "./node_modules/@ubirch/ubirch-verification-js";
 let ubirchVerificationWidget;
 let subscription = null;
 let initialized = false;

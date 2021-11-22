@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verification Example File</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verification Example File</title>
   <style>
     .section {
       margin: 10px;
     }
+
     button {
-      margin: 10px 0; padding: 7px; background-color: black; color: white;
+      margin: 10px 0;
+      padding: 7px;
+      background-color: black;
+      color: white;
     }
+
     button.verify {
       background-color: #ff008c;
       border: solid 1px black;
     }
+
     .hidden {
       visibility: hidden;
     }
@@ -22,69 +28,71 @@
 </head>
 <body>
 <div id="verification-test-page">
-  <h1>Ubirch Verification</h1>
-  <div class="example">
-    <div class="input-field">
-      <label for="json-input">JSON:</label>
-      <textarea rows="10" cols="80" placeholder="" type="text" id="json-input"></textarea>
-    </div>
-    <button id="trim-sort-json">
-      trim and sort JSON
-    </button>
-    <div class="input-field">
-      <label for="trimmed-json-input">Trimmed JSON:</label>
-      <textarea rows="10" cols="80" placeholder="" type="text" id="trimmed-json-input"></textarea>
-    </div>
-    <button id="insert-test-json">
-      Insert Test JSON
-    </button>
-    <button id="hash-from-json">
-      get hash from JSON
-    </button>
-    Hash Algorythm:
-    <input type="radio" id="sha256" name="hashalgo" value="sha256" onchange="changeHashAlgo(this);">
-    <label for="sha256">sha256</label>
-    <input type="radio" id="sha512" name="hashalgo" value="sha512" onchange="changeHashAlgo(this);" checked>
-    <label for="sha512">sha512</label>
-    <button id="json-test">
-      Test JSON Verification
-    </button>
+  <div class="section">
+    Stage:
+    <input type="radio" id="dev-stage" name="stage" value="dev" checked>
+    <label for="dev-stage">DEV</label>
+    <input type="radio" id="demo-stage" name="stage" value="demo">
+    <label for="demo-stage">DEMO</label>
+    <input type="radio" id="qa-stage" name="stage" value="qa">
+    <label for="qa-stage">QA</label>
+    <input type="radio" id="prod-stage" name="stage" value="prod">
+    <label for="prod-stage">PROD</label>
   </div>
-  <div class="example">
+  <div class="section">
     <div class="input-field">
-      <label for="hash-input">hash:</label>
-      <input placeholder="" type="text" id="hash-input">
+      <label for="token-input">UBIRCH verification token:</label><br>
+      <textarea rows="10" cols="80" placeholder="" type="text" id="token-input">
+eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJodHRwczovL3Rva2VuLmRldi51YmlyY2guY29tIiwic3ViIjoiYzBiNTc3ZmItMWNlZi00YzZmLThjNTAtOGQzYTFlNmVhNzUzIiwiYXVkIjoiaHR0cHM6Ly92ZXJpZnkuZGV2LnViaXJjaC5jb20iLCJleHAiOjE2NzI1MDQxNTgsImlhdCI6MTYzNzU5ODYzMSwianRpIjoiYTlmNTFmYzUtZTgyZi00MDczLTlhYTYtZmI3Yjk3NGViYTIzIiwic2NwIjpbInVwcDp2ZXJpZnkiXSwicHVyIjoiMjAyMiBERVYgV2lsZGNhcmQgVGVzdCBUb2tlbiIsInRncCI6W10sInRpZCI6WyIqIl0sIm9yZCI6W119.gnzzkp7eO4HtaLOG9Df7ll3-UT9Yo-pXmeRUI21e3lkJan_ju_0mC6FdDHLLgiI9nsYlQ7rmyvKHzbyaLMLYGw      </textarea
+      >
     </div>
-    <button id="insert-test-hash">
-      Insert Test hash
-    </button>
-    <button id="hash-test">
-      Test hash verification
-    </button>
+    <button id="set-token">Set UBIRCH verification token</button>
   </div>
-  <div id="verification-widget">
+  <div id="form-area" class="hidden">
+    <div class="section">
+      <div class="input-field">
+        <label for="json-input">JSON:</label>
+        <button class="mini" style="padding: 3px; border-radius: 8px;" id="insert-test-json">test data</button>
+        <br>
+        <textarea rows="10" cols="80" placeholder="" type="text" id="json-input"></textarea
+        >
+      </div>
+      <input type="checkbox" id="sort-json" checked>
+      <label for="sort-json">Trim and sort JSON (default=true)</label>
+      <button id="trim-sort-json" class="for-sort">
+        trim and sort JSON
+      </button>
+    </div>
+    <div class="section for-sort">
+      <div class="input-field">
+        <label for="trimmed-json-input">Trimmed JSON:</label><br>
+        <textarea rows="10" cols="80" placeholder="" type="text" id="trimmed-json-input"></textarea>
+      </div>
+    </div>
+    <div class="section">
+      Hash Algorythm:
+      <input type="radio" id="sha256" name="hashalgo" value="sha256" checked>
+      <label for="sha256">sha256</label>
+      <input type="radio" id="sha512" name="hashalgo" value="sha512">
+      <label for="sha512">sha512</label>
 
-  </div>
-  <div class="help">
-    <ol>
-      <li>
-        If you want to verify a hash insert it into the Test Hash Input and
-        <ul>
-          <li>press "Test hash verification" -> shows verification result in widget area</li>
-        </ul>
+      <button id="verify-json" class="verify">VERIFY: JSON</button>
+      <button id="hash-from-json">Get hash from JSON</button>
+    </div>
+    <div>
+      <div class="input-field" style="padding: 10px;">
+        <label for="hash-input">hash:</label><br>
+        <input placeholder="" type="text" id="hash-input" style="width: 800px;">
+      </div>
+      <button id="hash-test" class="verify">VERIFY: HASH</button>
+    </div>
 
-      </li>
-      <li>
-        If you have a JSON you want to verify insert it into the JSON Input and
-        <ul>
-          <li>press "trim and sort JSON" -> shows result in Trimmed JSON Input</li>
-          <li>select used hash algorithm</li>
-          <li>press "get hash from JSON" -> shows result in Test Hash Input</li>
-          <li>press "Test hash verification" -> shows verification result in widget area</li>
-        </ul>
-      </li>
-    </ol>
+
+    <div id="widget-root"></div>
+    <div class="input-field">
+      <label for="log">Log:</label><br>
+      <textarea rows="10" cols="80" placeholder="" type="text" id="log"></textarea>
+    </div>
   </div>
-</div>
 </body>
 </html>
