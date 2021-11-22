@@ -1,137 +1,69 @@
-# Ubirch Widgets
+# Ubirch Verification Widget Example Page
 
-This is a collection of ubirch widgets e.g. to verify a ubirched data set.
+This is a collection of ubirch verification widget example pages.
 
-This is the list of widgets (open links for a detailed documentation):
+It uses [@ubirch/ubirch-verification-js NPM package](https://www.npmjs.com/package/@ubirch/ubirch-verification-js)
+to verify that data has been anchored by UBIRCH in a trustworthy way. It checks that the data has been anchored as a
+UPP (UBIRCH Package Protocol) in the UBIRCH Verification System.
 
-- [Verification Widget](verification/)
+## Run this project
 
-## Project structure
+### Run NPM project locally with Webpack Dev Server
 
-- `dist` - folder with Webpack build output
-- `index.html` - widgets list page template
-- `webpack.config.js` - Webpack configuration file
-- `{{widget}}` - widgets' folders, e.g. `verification`
-  - `index.ts` - widget entry point
-  - `index.html` - widget usage instructions and examples
-  - any other files required for the widget
+You need [Node and NPM been installed](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) on your system.
 
-## NPM scripts
+Clone this project and call from root directory
 
-Move to widgets directory and call npm install.
-Then execute one of the following calls from that directory.
+    npm install
 
-(see chapter "Toubleshooting" if you have any problems)
+To start the example call
 
-### Using with Webpack Dev Server
+    npm run serve
 
-Run
+Open your web browser on
 
-```
-npm run serve:local
-```
+    http://localhost:9102/
 
-or
+#### `http://localhost:9102/json-hash-verification.html`
+here you can test example JSON data with a working development verification token (until 2022-12-31) by clicking:
 
-```
-npm run serve:dev
-```
+* `Set UBIRCH verification token` to activate the inserted token and selected UBIRCH stage
+(the stages are encapsulated: only hashes anchored on a specific stage - dev, demo, qa, prod - can be verified on the same stage successfully)
+* `test data` insert an example JSON data verifiable on dev
+* `trim and sort JSON`
+* `Get hash from JSON` with `sha256` selected as hash algorithm
+* `VERIFY: HASH` OR `VERIFY: JSON` verifies the data against the UBIRCH System on the selected stage (dev)
+and displays the result in the area below  <br> `<div id="widget-root"></div>`
 
-or
+#### `http://localhost:9102/form-verification.html`
+here you can test example form data with a working development verification token (until 2022-12-31) on stage dev by clicking:
 
-```
-npm run serve:demo
-```
-
-or
-
-```
-npm run serve:prod
-```
-...dependently on which environment you are going to use.
+* `Verify Data` -> the steps processed are displayed and the verification result will be displayed in the area below  <br> `<div id="widget-root"></div>`
 
 ### Build
 
 Run
 
 ```
+npm run build
+```
+
+or
+
+```
 npm run build:dev
 ```
 
-or
+Pages will be build into the `./dist` folder. This folder can be safely moved to any other location after the build, accordingly to project needs.
 
-```
-npm run build:demo
-```
+## How to build your own verification pages
 
-or
-
-```
-npm run build:prod
-```
-...dependently on which environment you are going to use.
-
-Widgets will be build into the `./dist` folder. This folder can be safely moved to any other location after the build, accordingly to project needs.
-
-## Distribution folder
-
-Project is building into the `./dist` folder. The folder contains:
-
-- `index.html` - list of all the widgets with demo pages
-- `{{widget}}.js` - widgets' files, e.g. `verification.js`
-- `{{widget}}.html` - widgets' demo pages, e.g. `verification.html`
-
-Each widget demo page contains an instructions and example of using the widget.
-
-## Assets
-
-As widget will be used as external script, all the URLs it will add to the document will be handled relatively to the document.
-To avoid wrong image (and other possible assets) URLs, we need to specify an absolute path.
-
-For **Verification widget**, `assets_url_prefix` field and `@@UBIRCH_WIDGET_ASSETS_PREFIX@@` placeholder are responsible for it.
-
-## Envirionments and configurations
-
-- widget could be configured through `environment.{{stage}}.ts` file, e.g. `./verification/environment.demo.ts`.
-- each configuration file name should contain _stage_ for which it would be used: `environment.demo.ts`, `environment.dev.ts`, `environment.prod.ts`
-- to use Webpack with some stage configuration, you should run it with `--env.STAGE` flag, e.g.:
-    ```
-    webpack-dev-server --env.STAGE dev
-    ```
-
-    ```
-    webpack --env.STAGE prod
-    ```
-- by default, Webpack will run with `demo` stage
-
-### Deploy
-
-On deploy, some values in the environment files could be replaced. Currently, they contains a placeholder like
-
-```
-assets_url_prefix: '@@UBIRCH_WIDGET_ASSETS_PREFIX@@'
-```
-
-...to easily find and change with data you need.
-
-## Adding / removing widgets
-
-To add a widget, you need:
-
-- create widgets folder in the root folder
-  - create `index.ts` file inside widget's folder to use it as Webpack module entry point
-  - create `index.html` file inside widget's folder to provide instructions and an example of using the widget
-  - other files (like environment files, style files etc.) aren't required
-- update `webpack.config.js` folder with adding the new entry point into `entry` field and new HTML page with `HtmlWebpackPlugin` in `plugins` field
-
-To remove a widget, you need:
-
-- remove widget folder
-- remove widget entry point and HTML file from `webpack.config.js`
+Detailed documentation how to build your own verification page for UBIRCH UPPs can be found in the
+[documentation of the ubirch-verification-js](http://developer.ubirch.com/ubirch-verification-js/) of the used
+[@ubirch/ubirch-verification-js NPM package](https://www.npmjs.com/package/@ubirch/ubirch-verification-js).
 
 ## Troubleshooting
 
-If you have any problems compiling or executing this widget, try to solve any problems in the main project first by:
+If you have any problems compiling or executing this widget examples, try to solve any problems in the main project first by:
 
-- calling npm install in the root directory
-- preparing the environment settings by calling ./run-local.sh (in bash/terminal)
+- calling `npm install` in the root directory
