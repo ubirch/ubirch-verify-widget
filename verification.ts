@@ -1,4 +1,4 @@
-import { UbirchVerificationWidget } from "./node_modules/@ubirch/ubirch-verification-js";
+import { UbirchVerificationWidget, UbirchFormUtils } from "./node_modules/@ubirch/ubirch-verification-js";
 let ubirchVerificationWidget;
 let subscription = null;
 let initialized = false;
@@ -15,6 +15,11 @@ const devStage = {
 }
 let selectedStage = devStage.dev;
 const testJSON = '{"b":"19111111","d":["20210104","20210127"],"f":"\\\\nNewline\\\\\\\\n\\\\\\\\\\\\n","g":"<p>Hällo</p>","i":"Altötting","p":"#%;,.<>-+*\\"\'?$&:*","r":"BioNTech / Pfizer Corminaty®","s":"2kmsq5fzqiu","t":"vaccination"}';
+
+if (document.getElementById('verification-form-test-page')) {
+  document.addEventListener('DOMContentLoaded', verifyForm);
+}
+
 
 if (document.getElementById('verification-test-page')) {
   setFormVisibility(initialized);
@@ -169,4 +174,39 @@ function setFormVisibility(visible) {
 }
 function setTestJSON() {
   (document.getElementById('json-input') as HTMLInputElement).value = testJSON;
+}
+
+function verifyForm() {
+
+  const formToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJodHRwczovL3Rva2VuLmRldi51YmlyY2guY29tIiwic3ViIjoiYzBiNTc3ZmItMWNlZi00YzZmLThjNTAtOGQzYTFlNmVhNzUzIiwiYXVkIjoiaHR0cHM6Ly92ZXJpZnkuZGV2LnViaXJjaC5jb20iLCJleHAiOjE2NzI1MDQxNTgsImlhdCI6MTYzNzU5ODYzMSwianRpIjoiYTlmNTFmYzUtZTgyZi00MDczLTlhYTYtZmI3Yjk3NGViYTIzIiwic2NwIjpbInVwcDp2ZXJpZnkiXSwicHVyIjoiMjAyMiBERVYgV2lsZGNhcmQgVGVzdCBUb2tlbiIsInRncCI6W10sInRpZCI6WyIqIl0sIm9yZCI6W119.gnzzkp7eO4HtaLOG9Df7ll3-UT9Yo-pXmeRUI21e3lkJan_ju_0mC6FdDHLLgiI9nsYlQ7rmyvKHzbyaLMLYGw";
+  const formStage = 'dev';
+  const formAlgorithm = 'sha256';
+  const formResultSector = '#widget-root';
+  const formIds = ["f", "g", "b", "p", "i", "d", "t", "r", "s"];
+
+  // create ubirchVerificationWidget instance
+  ubirchVerificationWidget = new UbirchVerificationWidget({
+    algorithm: formAlgorithm,
+    stage: formStage,
+    accessToken: formToken,
+    hostSelector: formResultSector,
+  });
+  (document.getElementById('log') as HTMLInputElement).value = '';
+  if (!subscription) subscription = ubirchVerificationWidget.messenger.subscribe(updateLog);
+
+  try {
+    const formUtils = new UbirchFormUtils({
+      formIds
+    });
+
+    const jsonFromFormData = formUtils.getFormParamsFromUrl(window, ';');
+
+    formUtils.setDataIntoForm(jsonFromFormData, window.document);
+
+    const hash = ubirchVerificationWidget.createHash(JSON.stringify(jsonFromFormData));
+    ubirchVerificationWidget.verifyHash(hash);
+
+  } catch (e) {
+    console.log('Fehler! ' + e);
+  }
 }

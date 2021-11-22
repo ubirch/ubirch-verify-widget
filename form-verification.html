@@ -5,103 +5,97 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Verification Example File</title>
   <style>
-    .example {
+    .section {
+      margin: 10px;
+    }
+
+    button {
+      margin: 10px 0;
+      padding: 7px;
+      background-color: black;
+      color: white;
+    }
+
+    button.verify {
+      background-color: #ff008c;
+      border: solid 1px black;
+    }
+
+    .hidden {
+      visibility: hidden;
+    }
+
+    input {
+      padding: 5px;
+    }
+
+    .input-field {
       padding: 10px;
-      border: 1px solid black;
-      margin-bottom: 10px;
     }
 
-    #verification-widget {
-      padding: 10px;
-      border: 1px solid black;
-      margin-bottom: 10px;
-    }
-
-    #hash-input {
-      width: 800px;
-    }
-
-    .help {
-      padding: 10px;
-      border: 1px solid black;
-    }
-
-    .help li {
-      margin-bottom: 10px;
-    }
-
-    code {
-      background: lightgrey;
+    label.formLabel {
+      padding-right: 30px;
     }
   </style>
 </head>
 <body>
-<div id="verification-test-page">
+<div id="verification-form-test-page">
   <div class="section">
     <button style="float: right" onclick="location.href = 'index.html'">BACK to Overview</button>
   </div>
-  <div class="section">
-    Stage:
-    <input type="radio" id="dev-stage" name="stage" value="dev"  checked>
-    <label for="dev-stage">DEV</label>
-    <input type="radio" id="demo-stage" name="stage" value="demo" >
-    <label for="demo-stage">DEMO</label>
-    <input type="radio" id="qa-stage" name="stage" value="qa" >
-    <label for="qa-stage">QA</label>
-    <input type="radio" id="prod-stage" name="stage" value="prod" >
-    <label for="prod-stage">PROD</label>
-  </div>
-  <div class="section">
-    <div class="input-field">
-      <label for="token-input">UBIRCH verification token:</label><br>
-      <textarea rows="10" cols="80" placeholder="" type="text" id="token-input">
-eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJodHRwczovL3Rva2VuLmRldi51YmlyY2guY29tIiwic3ViIjoiYzBiNTc3ZmItMWNlZi00YzZmLThjNTAtOGQzYTFlNmVhNzUzIiwiYXVkIjoiaHR0cHM6Ly92ZXJpZnkuZGV2LnViaXJjaC5jb20iLCJleHAiOjE2NzI1MDQxNTgsImlhdCI6MTYzNzU5ODYzMSwianRpIjoiYTlmNTFmYzUtZTgyZi00MDczLTlhYTYtZmI3Yjk3NGViYTIzIiwic2NwIjpbInVwcDp2ZXJpZnkiXSwicHVyIjoiMjAyMiBERVYgV2lsZGNhcmQgVGVzdCBUb2tlbiIsInRncCI6W10sInRpZCI6WyIqIl0sIm9yZCI6W119.gnzzkp7eO4HtaLOG9Df7ll3-UT9Yo-pXmeRUI21e3lkJan_ju_0mC6FdDHLLgiI9nsYlQ7rmyvKHzbyaLMLYGw      </textarea
-      >
-    </div>
-    <button id="set-token">Set UBIRCH verification token</button>
-  </div>
-  <div id="form-area" class="hidden">
     <div class="section">
       <div class="input-field">
-        <label for="json-input">JSON:</label><button class="mini" style="padding: 3px; border-radius: 8px;" id="insert-test-json">test data</button> <br>
-        <textarea rows="10" cols="80" placeholder="" type="text" id="json-input"></textarea
-        >
+          <label for="f" class="formLabel">Familienname</label>
+          <input type="text" id="f" class="formInput" readonly="">
       </div>
-      <input type="checkbox" id="sort-json" checked>
-      <label for="sort-json">Trim and sort JSON (default=true)</label>
-      <button id="trim-sort-json" class="for-sort">
-        trim and sort JSON
-      </button>
-    </div>
-    <div class="section for-sort">
+
       <div class="input-field">
-        <label for="trimmed-json-input">Trimmed JSON:</label><br>
-        <textarea rows="10" cols="80" placeholder="" type="text" id="trimmed-json-input"></textarea>
+          <label for="g" class="formLabel">Vorname(n)</label>
+          <input type="text" id="g" class="formInput" readonly="">
       </div>
-    </div>
-    <div class="section">
-      Hash Algorythm:
-      <input type="radio" id="sha256" name="hashalgo" value="sha256" checked>
-      <label for="sha256">sha256</label>
-      <input type="radio" id="sha512" name="hashalgo" value="sha512">
-      <label for="sha512">sha512</label>
 
-      <button id="verify-json" class="verify">VERIFY: JSON</button>
-      <button id="hash-from-json">Get hash from JSON</button>
-    </div>
-    <div>
-      <div class="input-field" style="padding: 10px;">
-        <label for="hash-input">hash:</label><br>
-        <input placeholder="" type="text" id="hash-input" style="width: 800px;">
+      <div class="input-field">
+          <label for="b" class="formLabel">Geburtsdatum</label>
+          <input type="text" id="b" class="formInput" readonly="">
       </div>
-      <button id="hash-test" class="verify">VERIFY: HASH</button>
+
+      <div class="input-field">
+          <label for="p" class="formLabel">Personalausweisnummer</label>
+          <input type="text" id="p" class="formInput" readonly="">
+      </div>
+
+      <div class="input-field">
+          <label for="i" class="formLabel">interne Labor ID</label>
+          <input type="text" id="i" class="formInput" readonly="">
+      </div>
+
+      <div class="input-field">
+          <label for="d" class="formLabel">Testdatum mit Uhrzeit (JJJJMMTTHHMM)</label>
+          <input type="text" id="d" class="formInput" readonly="">
+      </div>
+
+      <div class="input-field">
+          <label for="t" class="formLabel">Testtyp</label>
+          <input type="text" id="t" class="formInput" readonly="">
+      </div>
+
+      <div class="input-field">
+          <label for="r" class="formLabel">Testergebnis</label>
+          <input type="text" id="r" class="formInput" readonly="">
+      </div>
+
+      <div class="input-field">
+          <label for="r" class="formLabel">Secret</label>
+          <input type="text" id="s" class="formInput" readonly="">
+      </div>
+
     </div>
 
-
-    <div id="widget-root"></div>
+  <div class="section">
     <div class="input-field">
       <label for="log">Log:</label><br>
       <textarea rows="10" cols="80" placeholder="" type="text" id="log"></textarea>
     </div>
   </div>
+    <div id="widget-root"></div>
 </div>
