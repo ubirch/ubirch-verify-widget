@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Example File</title>
+  <style>
+    .section {
+      margin: 10px;
+    }
+    button {
+      margin: 10px 0; padding: 7px; background-color: black; color: white;
+    }
+    button.verify {
+      background-color: #ff008c;
+      border: solid 1px black;
+    }
+    .hidden {
+      visibility: hidden;
+    }
+  </style>
+</head>
+<body>
+<div id="verification-test-page">
+  <h1>Ubirch Verification</h1>
+  <div class="example">
+    <div class="input-field">
+      <label for="json-input">JSON:</label>
+      <textarea rows="10" cols="80" placeholder="" type="text" id="json-input"></textarea>
+    </div>
+    <button id="trim-sort-json">
+      trim and sort JSON
+    </button>
+    <div class="input-field">
+      <label for="trimmed-json-input">Trimmed JSON:</label>
+      <textarea rows="10" cols="80" placeholder="" type="text" id="trimmed-json-input"></textarea>
+    </div>
+    <button id="insert-test-json">
+      Insert Test JSON
+    </button>
+    <button id="hash-from-json">
+      get hash from JSON
+    </button>
+    Hash Algorythm:
+    <input type="radio" id="sha256" name="hashalgo" value="sha256" onchange="changeHashAlgo(this);">
+    <label for="sha256">sha256</label>
+    <input type="radio" id="sha512" name="hashalgo" value="sha512" onchange="changeHashAlgo(this);" checked>
+    <label for="sha512">sha512</label>
+    <button id="json-test">
+      Test JSON Verification
+    </button>
+  </div>
+  <div class="example">
+    <div class="input-field">
+      <label for="hash-input">hash:</label>
+      <input placeholder="" type="text" id="hash-input">
+    </div>
+    <button id="insert-test-hash">
+      Insert Test hash
+    </button>
+    <button id="hash-test">
+      Test hash verification
+    </button>
+  </div>
+  <div id="verification-widget">
+
+  </div>
+  <div class="help">
+    <ol>
+      <li>
+        If you want to verify a hash insert it into the Test Hash Input and
+        <ul>
+          <li>press "Test hash verification" -> shows verification result in widget area</li>
+        </ul>
+
+      </li>
+      <li>
+        If you have a JSON you want to verify insert it into the JSON Input and
+        <ul>
+          <li>press "trim and sort JSON" -> shows result in Trimmed JSON Input</li>
+          <li>select used hash algorithm</li>
+          <li>press "get hash from JSON" -> shows result in Test Hash Input</li>
+          <li>press "Test hash verification" -> shows verification result in widget area</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+</div>
+</body>
+</html>
