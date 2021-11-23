@@ -1,18 +1,18 @@
 {
-  "name": "widgets",
+  "name": "verification-widget-example-collection",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "serve:dev": "webpack-dev-server --env.STAGE dev",
-    "serve": "webpack-dev-server --env.STAGE prod",
-    "build:dev": "webpack --env.STAGE dev",
-    "build": "webpack --env.STAGE prod"
+    "serve:dev": "webpack-dev-server --env STAGE=dev",
+    "serve": "webpack-dev-server --env STAGE=prod",
+    "build:dev": "webpack --env STAGE=dev",
+    "build": "webpack --env STAGE=prod"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@ubirch/ubirch-verification-js": "^1.3.0-beta.1",
+    "@ubirch/ubirch-verification-js": "^1.3.0-beta.2",
     "js-sha256": "^0.9.0",
     "js-sha512": "^0.8.0",
     "sha256": "^0.2.0"
@@ -24,13 +24,11 @@
     "css-loader": "^3.5.3",
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.3.0",
-    "sass": "^1.26.5",
-    "sass-loader": "^8.0.2",
     "style-loader": "^1.2.1",
     "ts-loader": "^7.0.4",
     "typescript": "^3.4.5",
     "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.5.0"
   }
 }
