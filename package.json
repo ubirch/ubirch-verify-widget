@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "npm run serve:dev",
     "serve:dev": "webpack-dev-server --env STAGE=dev",
     "serve": "webpack-dev-server --env STAGE=prod",
     "build:dev": "webpack --env STAGE=dev",
