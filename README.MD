@@ -59,7 +59,7 @@ Pages will be build into the `./dist` folder. This folder can be safely moved to
 ## How to build your own verification pages
 
 Detailed documentation how to build your own verification page for UBIRCH UPPs can be found in the
-[documentation of the ubirch-verification-js](http://developer.ubirch.com/ubirch-verification-js/) of the used
+[documentation of the ubirch-verification-js](https://developer.ubirch.com/ubirch-verification-js/) of the used
 [@ubirch/ubirch-verification-js NPM package](https://www.npmjs.com/package/@ubirch/ubirch-verification-js).
 
 ## Troubleshooting
