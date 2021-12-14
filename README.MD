@@ -56,6 +56,14 @@ npm run build:dev
 
 Pages will be build into the `./dist` folder. This folder can be safely moved to any other location after the build, accordingly to project needs.
 
+## Example how to include UBIRCH verification widget from script tag
+
+Folder `script-tag-use-demo` contains a simple example how to include the UBIRCH verification widget
+from a script tag into your html page directly. No webpack project needed in this case.
+
+You can start `index-simple.html` directly from that file in a browser.
+
+
 ## How to build your own verification pages
 
 Detailed documentation how to build your own verification page for UBIRCH UPPs can be found in the
