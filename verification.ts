@@ -1,17 +1,17 @@
-import { UbirchVerificationWidget, UbirchFormUtils } from "./node_modules/@ubirch/ubirch-verification-js";
+import { UbirchVerificationWidget, UbirchFormUtils, EUbirchHashAlgorithms, EUbirchStages } from "./node_modules/@ubirch/ubirch-verification-js";
 let ubirchVerificationWidget;
 let subscription = null;
 let initialized = false;
 const hashAlgo = {
-  sha256: 'sha256',
-  sha512: 'sha512'
+  sha256: EUbirchHashAlgorithms.SHA256,
+  sha512: EUbirchHashAlgorithms.SHA512
 };
 let selectedHashAlgo = hashAlgo.sha256;
 const devStage = {
-  dev: 'dev',
-  demo: 'demo',
-  qa: 'qa',
-  prod: 'prod'
+  dev: EUbirchStages.dev,
+  demo: EUbirchStages.demo,
+  qa: EUbirchStages.qa,
+  prod: EUbirchStages.prod
 }
 let selectedStage = devStage.dev;
 const testJSON = '{"b":"19111111","d":["20210104","20210127"],"f":"\\\\nNewline\\\\\\\\n\\\\\\\\\\\\n","g":"<p>Hällo</p>","i":"Altötting","p":"#%;,.<>-+*\\"\'?$&:*","r":"BioNTech / Pfizer Corminaty®","s":"2kmsq5fzqiu","t":"vaccination"}';
@@ -179,8 +179,8 @@ function setTestJSON() {
 function verifyForm() {
 
   const formToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJodHRwczovL3Rva2VuLmRldi51YmlyY2guY29tIiwic3ViIjoiYzBiNTc3ZmItMWNlZi00YzZmLThjNTAtOGQzYTFlNmVhNzUzIiwiYXVkIjoiaHR0cHM6Ly92ZXJpZnkuZGV2LnViaXJjaC5jb20iLCJleHAiOjE2NzI1MDQxNTgsImlhdCI6MTYzNzU5ODYzMSwianRpIjoiYTlmNTFmYzUtZTgyZi00MDczLTlhYTYtZmI3Yjk3NGViYTIzIiwic2NwIjpbInVwcDp2ZXJpZnkiXSwicHVyIjoiMjAyMiBERVYgV2lsZGNhcmQgVGVzdCBUb2tlbiIsInRncCI6W10sInRpZCI6WyIqIl0sIm9yZCI6W119.gnzzkp7eO4HtaLOG9Df7ll3-UT9Yo-pXmeRUI21e3lkJan_ju_0mC6FdDHLLgiI9nsYlQ7rmyvKHzbyaLMLYGw";
-  const formStage = 'dev';
-  const formAlgorithm = 'sha256';
+  const formStage = EUbirchStages.dev;
+  const formAlgorithm = EUbirchHashAlgorithms.SHA256;
   const formResultSector = '#widget-root';
   const formIds = ["f", "g", "b", "p", "i", "d", "t", "r", "s"];
 

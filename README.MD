@@ -18,7 +18,7 @@ Clone this project and call from root directory
 
 To start the example call
 
-    npm run serve
+    npm start
 
 Open your web browser on
 
